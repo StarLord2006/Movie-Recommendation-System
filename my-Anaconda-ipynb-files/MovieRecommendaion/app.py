@@ -1,14 +1,23 @@
 import pickle
 import streamlit as st
 import requests
+
 API_KEY = "fe6b086a711621d0e43b41d7927201a7"
+
 def fetch_poster(movie_id):
-    url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
-    data = requests.get(url)
-    data = data.json()
-    poster_path = data['poster_path']
-    full_path = "https://image.tmdb.org/t/p/w500/" + poster_path
-    return full_path
+    url = f"https://api.tmdb.org/3/movie/{movie_id}?api_key={API_KEY}&language=en-US"
+    try:
+        data = requests.get(url, timeout=3)
+        data.raise_for_status()
+        data = data.json()
+        poster_path = data.get('poster_path')
+        if poster_path:
+            full_path = "https://image.tmdb.org/t/p/w500/" + poster_path
+            return full_path
+    except Exception:
+        pass
+    # Fallback to a high-quality movie placeholder image if the API fails or times out
+    return "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=500&auto=format&fit=crop"
 
 def recommend(movie):
     index = movies[movies['title'] == movie].index[0]
@@ -53,5 +62,3 @@ if st.button('Show Recommendation'):
     with col5:
         st.text(recommended_movie_names[4])
         st.image(recommended_movie_posters[4])
-
-
