@@ -1,6 +1,10 @@
 import pickle
 import streamlit as st
 import requests
+import os
+
+# Build paths relative to this file so it works both locally and on Streamlit Cloud
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 API_KEY = "fe6b086a711621d0e43b41d7927201a7"
 
@@ -34,8 +38,8 @@ def recommend(movie):
 
 
 st.header('Movie Recommender System')
-movies = pickle.load(open('movie_list.pkl','rb'))
-similarity = pickle.load(open('similarity.pkl','rb'))
+movies = pickle.load(open(os.path.join(BASE_DIR, 'movie_list.pkl'),'rb'))
+similarity = pickle.load(open(os.path.join(BASE_DIR, 'similarity.pkl'),'rb'))
 
 movie_list = movies['title'].values
 selected_movie = st.selectbox(
